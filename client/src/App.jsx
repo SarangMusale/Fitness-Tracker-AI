@@ -5,6 +5,7 @@ import {
   Routes,
   Route,
   Link,
+  useLocation,
 } from "react-router-dom";
 
 import {
@@ -17,6 +18,7 @@ import {
   FaRobot,
 } from "react-icons/fa";
 
+import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
 import Workouts from "./pages/Workouts";
@@ -52,27 +54,47 @@ function Sidebar({ isOpen, setIsOpen }) {
         </div>
 
         <div className="space-y-4">
-          <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3 p-4 rounded-xl bg-slate-700 hover:bg-slate-600 transition">
+          <Link
+            to="/dashboard"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl bg-slate-700 hover:bg-slate-600 transition"
+          >
             <FaChartLine />
             <span>Dashboard</span>
           </Link>
 
-          <Link to="/workouts" onClick={() => setIsOpen(false)} className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition">
+          <Link
+            to="/workouts"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
+          >
             <FaDumbbell />
             <span>Workouts</span>
           </Link>
 
-          <Link to="/analytics" onClick={() => setIsOpen(false)} className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition">
+          <Link
+            to="/analytics"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
+          >
             <FaRunning />
             <span>Analytics</span>
           </Link>
 
-          <Link to="/ai-workout" onClick={() => setIsOpen(false)} className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition">
+          <Link
+            to="/ai-workout"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
+          >
             <FaRobot />
             <span>AI Coach</span>
           </Link>
 
-          <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition">
+          <Link
+            to="/profile"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
+          >
             <FaUser />
             <span>Profile</span>
           </Link>
@@ -82,37 +104,50 @@ function Sidebar({ isOpen, setIsOpen }) {
   );
 }
 
-function App() {
+function AppLayout() {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  const isLandingPage = location.pathname === "/";
+
+  if (isLandingPage) {
+    return <Landing />;
+  }
 
   return (
-    <BrowserRouter>
-      <div className="flex bg-slate-900 text-white min-h-screen">
-        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+    <div className="flex bg-slate-900 text-white min-h-screen">
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
-        <div className="flex-1">
-          <div className="lg:hidden flex items-center justify-between p-4 border-b border-slate-800">
-            <button
-              onClick={() => setIsOpen(true)}
-              className="text-2xl"
-            >
-              <FaBars />
-            </button>
+      <div className="flex-1">
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-slate-800">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="text-2xl"
+          >
+            <FaBars />
+          </button>
 
-            <h1 className="text-2xl font-bold text-cyan-400">
-              Fitness Tracker
-            </h1>
-          </div>
-
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/workouts" element={<Workouts />} />
-            <Route path="/ai-workout" element={<AIWorkout />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
+          <h1 className="text-2xl font-bold text-cyan-400">
+            Fitness Tracker
+          </h1>
         </div>
+
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/workouts" element={<Workouts />} />
+          <Route path="/ai-workout" element={<AIWorkout />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
       </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppLayout />
     </BrowserRouter>
   );
 }
