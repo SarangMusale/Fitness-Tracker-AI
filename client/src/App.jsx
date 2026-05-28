@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { FaBars } from "react-icons/fa";
 
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
+
+import { FaBars } from "react-icons/fa";
 
 import Sidebar from "./components/Sidebar";
 
@@ -14,7 +15,6 @@ import Analytics from "./pages/Analytics";
 import Workouts from "./pages/Workouts";
 import Profile from "./pages/Profile";
 import AIWorkout from "./pages/AIWorkout";
-
 
 function App() {
 
@@ -45,39 +45,40 @@ function App() {
             </button>
 
             <h1 className="text-2xl font-bold text-cyan-400">
-              Fitness Tracker AI            </h1>
+              Fitness Tracker AI
+            </h1>
 
           </div>
 
           {/* Routes */}
-        <Routes>
+          <Routes>
 
-  <Route
-    path="/"
-    element={<Dashboard />}
-  />
+            <Route
+              path="/"
+              element={<Dashboard />}
+            />
 
-  <Route
-    path="/analytics"
-    element={<Analytics />}
-  />
+            <Route
+              path="/analytics"
+              element={<Analytics />}
+            />
 
-  <Route
-    path="/workouts"
-    element={<Workouts />}
-  />
+            <Route
+              path="/workouts"
+              element={<Workouts />}
+            />
 
-  <Route
-    path="/ai-workout"
-    element={<AIWorkout />}
-  />
+            <Route
+              path="/ai-workout"
+              element={<AIWorkout />}
+            />
 
-  <Route
-    path="/profile"
-    element={<Profile />}
-  />
+            <Route
+              path="/profile"
+              element={<Profile />}
+            />
 
-</Routes>
+          </Routes>
 
         </div>
 
