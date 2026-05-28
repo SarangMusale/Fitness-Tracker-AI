@@ -8,7 +8,7 @@ import {
 
 import { FaBars } from "react-icons/fa";
 
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./Components/Sidebar";
 
 import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
