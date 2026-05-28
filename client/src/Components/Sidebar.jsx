@@ -103,3 +103,4 @@ function Sidebar({ isOpen, setIsOpen }) {
 }
 
 export default Sidebar;
+
