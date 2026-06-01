@@ -10,7 +10,9 @@ import {
 import { Link } from "react-router-dom";
 
 function Sidebar({ isOpen, setIsOpen }) {
-  return (
+const { logout } = useContext(AuthContext);
+
+    return (
     <>
       {/* Mobile Overlay */}
       {isOpen && (
@@ -93,6 +95,16 @@ function Sidebar({ isOpen, setIsOpen }) {
             <span>Profile</span>
           </Link>
 
+<button
+  onClick={() => {
+    logout();
+    setIsOpen(false);
+    window.location.href = "/login";
+  }}
+  className="flex items-center gap-3 p-4 rounded-xl hover:bg-red-500/20 text-red-400 transition w-full"
+>
+  Logout
+</button>
           
 
         </div>

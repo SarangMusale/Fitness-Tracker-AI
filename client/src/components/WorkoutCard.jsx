@@ -11,17 +11,13 @@ function WorkoutCard({
   deleteWorkout,
   editWorkout
 }) {
-
   const [isEditing, setIsEditing] = useState(false);
 
   const [editedName, setEditedName] = useState(workout.name);
-
   const [editedCalories, setEditedCalories] = useState(workout.calories);
-
   const [editedDuration, setEditedDuration] = useState(workout.duration);
 
   const handleSave = () => {
-
     const updatedWorkout = {
       ...workout,
       name: editedName,
@@ -30,17 +26,12 @@ function WorkoutCard({
     };
 
     editWorkout(updatedWorkout);
-
     setIsEditing(false);
-
   };
 
   return (
     <div className="bg-slate-800 p-6 rounded-2xl">
-
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-
         {isEditing ? (
           <input
             type="text"
@@ -55,7 +46,6 @@ function WorkoutCard({
         )}
 
         <div className="flex gap-4 text-lg">
-
           <button
             onClick={() => {
               if (isEditing) {
@@ -70,24 +60,17 @@ function WorkoutCard({
           </button>
 
           <button
-            onClick={() => deleteWorkout(workout.id)}
+            onClick={() => deleteWorkout(workout._id)}
             className="text-red-400 hover:text-red-300 transition"
           >
             <FaTrash />
           </button>
-
         </div>
-
       </div>
 
-      {/* Body */}
       <div className="space-y-4 text-slate-300">
-
         <div>
-
-          <p className="mb-2">
-            Calories Burned
-          </p>
+          <p className="mb-2">Calories Burned</p>
 
           {isEditing ? (
             <input
@@ -101,14 +84,10 @@ function WorkoutCard({
               {workout.calories}
             </p>
           )}
-
         </div>
 
         <div>
-
-          <p className="mb-2">
-            Duration
-          </p>
+          <p className="mb-2">Duration</p>
 
           {isEditing ? (
             <input
@@ -122,11 +101,8 @@ function WorkoutCard({
               {workout.duration} mins
             </p>
           )}
-
         </div>
-
       </div>
-
     </div>
   );
 }

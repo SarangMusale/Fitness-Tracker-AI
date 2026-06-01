@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 
 import {
   BrowserRouter,
@@ -24,6 +25,9 @@ import Analytics from "./pages/Analytics";
 import Workouts from "./pages/Workouts";
 import Profile from "./pages/Profile";
 import AIWorkout from "./pages/AIWorkout";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function Sidebar({ isOpen, setIsOpen }) {
   return (
@@ -98,6 +102,16 @@ function Sidebar({ isOpen, setIsOpen }) {
             <FaUser />
             <span>Profile</span>
           </Link>
+          <button
+  onClick={() => {
+    logout();
+    setIsOpen(false);
+    window.location.href = "/login";
+  }}
+  className="flex items-center gap-3 p-4 rounded-xl hover:bg-red-500/20 text-red-400 transition w-full"
+>
+  Logout
+</button>
         </div>
       </div>
     </>
@@ -108,10 +122,16 @@ function AppLayout() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const isLandingPage = location.pathname === "/";
-
-  if (isLandingPage) {
+  if (location.pathname === "/") {
     return <Landing />;
+  }
+
+  if (location.pathname === "/login") {
+    return <Login />;
+  }
+
+  if (location.pathname === "/register") {
+    return <Register />;
   }
 
   return (
@@ -133,11 +153,50 @@ function AppLayout() {
         </div>
 
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/workouts" element={<Workouts />} />
-          <Route path="/ai-workout" element={<AIWorkout />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <Analytics />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/workouts"
+            element={
+              <ProtectedRoute>
+                <Workouts />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/ai-workout"
+            element={
+              <ProtectedRoute>
+                <AIWorkout />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </div>

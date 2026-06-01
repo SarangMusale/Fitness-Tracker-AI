@@ -1,20 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import api from "../api";
 
 function AIWorkout() {
-  const [goal, setGoal] = useState("");
-  const [level, setLevel] = useState("");
   const [days, setDays] = useState("");
   const [focusArea, setFocusArea] = useState("");
+  const [notes, setNotes] = useState("");
 
+  const [profile, setProfile] = useState(null);
   const [plan, setPlan] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get("/profile");
+      setProfile(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const generatePlan = async () => {
-    if (!goal || !level || !days || !focusArea) {
-      setError("Please fill all fields before generating a plan.");
+    if (!days || !focusArea) {
+      setError("Please select workout days and focus area.");
       return;
     }
 
@@ -25,29 +39,37 @@ function AIWorkout() {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
     const prompt = `
-Create a personalized workout plan.
+Create a highly personalized workout plan.
 
-User details:
-Goal: ${goal}
-Experience level: ${level}
+User Profile:
+Age: ${profile?.age}
+Height: ${profile?.height} cm
+Weight: ${profile?.weight} kg
+Goal: ${profile?.goal}
+Experience: ${profile?.experience}
+
+Workout Preferences:
 Workout days per week: ${days}
 Focus area: ${focusArea}
 
-Give:
+Additional Notes:
+${notes}
+
+Requirements:
 1. Best workout split
 2. Weekly schedule
-3. Exercises for each day
-4. Sets and reps
+3. Exercises with sets and reps
+4. Progressive overload advice
 5. Cardio recommendation
 6. Recovery advice
 7. Nutrition guidance
 
-Keep it practical for an engineering student who goes to gym regularly.
+Make the plan practical for a college engineering student.
 `;
 
     try {
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
         {
           contents: [
             {
@@ -66,8 +88,17 @@ Keep it practical for an engineering student who goes to gym regularly.
 
       setPlan(aiText);
     } catch (err) {
-      console.error(err);
-      setError("AI request failed. Check API key, internet, or console error.");
+      console.log(err.response?.data);
+
+      if (err.response?.status === 429) {
+        setError("AI quota limit reached. Please wait a few minutes and try again.");
+      } else if (err.response?.status === 403) {
+        setError("Gemini API key is invalid or blocked.");
+      } else if (err.response?.status === 404) {
+        setError("Gemini model not found. Check model name.");
+      } else {
+        setError("AI request failed. Check console for details.");
+      }
     } finally {
       setLoading(false);
     }
@@ -79,31 +110,24 @@ Keep it practical for an engineering student who goes to gym regularly.
         AI Workout Generator
       </h1>
 
+      {profile && (
+        <div className="bg-slate-800 p-6 rounded-2xl mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-cyan-400">
+            Profile-Based AI Coach
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-slate-300">
+            <p>Age: {profile.age}</p>
+            <p>Height: {profile.height} cm</p>
+            <p>Weight: {profile.weight} kg</p>
+            <p>Goal: {profile.goal}</p>
+            <p>Level: {profile.experience}</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-slate-800 p-6 rounded-2xl mb-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <select
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-            className="bg-slate-700 p-4 rounded-xl outline-none"
-          >
-            <option value="">Select Goal</option>
-            <option>Muscle Gain</option>
-            <option>Fat Loss</option>
-            <option>Body Recomposition</option>
-            <option>Strength</option>
-          </select>
-
-          <select
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
-            className="bg-slate-700 p-4 rounded-xl outline-none"
-          >
-            <option value="">Experience Level</option>
-            <option>Beginner</option>
-            <option>Intermediate</option>
-            <option>Advanced</option>
-          </select>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <select
             value={days}
             onChange={(e) => setDays(e.target.value)}
@@ -130,12 +154,19 @@ Keep it practical for an engineering student who goes to gym regularly.
           </select>
         </div>
 
+        <textarea
+          placeholder="Any extra notes? Example: I have knee pain, I prefer morning workouts, I want bigger arms..."
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="bg-slate-700 p-4 rounded-xl outline-none w-full mt-4 min-h-32"
+        />
+
         <button
           onClick={generatePlan}
           disabled={loading}
           className="mt-6 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-600 transition px-6 py-3 rounded-xl font-bold text-slate-900"
         >
-          {loading ? "Generating..." : "Generate Real AI Plan"}
+          {loading ? "Generating..." : "Generate Personalized AI Plan"}
         </button>
 
         {error && (
@@ -152,10 +183,10 @@ Keep it practical for an engineering student who goes to gym regularly.
           </h2>
 
           <div className="prose prose-invert max-w-none">
-  <ReactMarkdown>
-    {plan}
-  </ReactMarkdown>
-</div>
+            <ReactMarkdown>
+              {plan}
+            </ReactMarkdown>
+          </div>
         </div>
       )}
     </div>
