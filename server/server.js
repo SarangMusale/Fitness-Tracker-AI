@@ -11,7 +11,17 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors()); //line A
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://fitness-tracker-jxn2cq4kk-sarangmusales-projects.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);//line A
 app.use(express.json()); //line B
 
 app.get("/", (req, res) => {
