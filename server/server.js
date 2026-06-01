@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const workoutRoutes = require("./routes/workoutRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes); // line c
 app.use("/api/workouts", workoutRoutes); //line d
 app.use("/api/profile", profileRoutes); // line e
+app.use("/api/ai", aiRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI, {
