@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import api from "../api";
 
@@ -36,62 +35,22 @@ function AIWorkout() {
     setError("");
     setPlan("");
 
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
-    const prompt = `
-Create a highly personalized workout plan.
-
-User Profile:
-Age: ${profile?.age}
-Height: ${profile?.height} cm
-Weight: ${profile?.weight} kg
-Goal: ${profile?.goal}
-Experience: ${profile?.experience}
-
-Workout Preferences:
-Workout days per week: ${days}
-Focus area: ${focusArea}
-
-Additional Notes:
-${notes}
-
-Requirements:
-1. Best workout split
-2. Weekly schedule
-3. Exercises with sets and reps
-4. Progressive overload advice
-5. Cardio recommendation
-6. Recovery advice
-7. Nutrition guidance
-
-Make the plan practical for a college engineering student.
-`;
-
     try {
-      const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-        {
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-        }
-      );
+      const response = await api.post("/ai/workout-plan", {
+        profile,
+        days,
+        focusArea,
+        notes,
+      });
 
-      const aiText =
-        response.data.candidates[0].content.parts[0].text;
-
-      setPlan(aiText);
+      setPlan(response.data.plan);
     } catch (err) {
       console.log(err.response?.data);
 
       if (err.response?.status === 429) {
-        setError("AI quota limit reached. Please wait a few minutes and try again.");
+        setError(
+          "AI quota limit reached. Please wait a few minutes and try again."
+        );
       } else if (err.response?.status === 403) {
         setError("Gemini API key is invalid or blocked.");
       } else if (err.response?.status === 404) {
@@ -155,7 +114,7 @@ Make the plan practical for a college engineering student.
         </div>
 
         <textarea
-          placeholder="Any extra notes? Example: I have knee pain, I prefer morning workouts, I want bigger arms..."
+          placeholder="Any extra notes? Example: I do running, have knee pain, prefer morning workouts, want bigger arms..."
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           className="bg-slate-700 p-4 rounded-xl outline-none w-full mt-4 min-h-32"
@@ -179,7 +138,7 @@ Make the plan practical for a college engineering student.
       {plan && (
         <div className="bg-slate-800 p-6 rounded-2xl">
           <h2 className="text-2xl font-bold mb-6 text-cyan-400">
-            Gemini AI Recommendation
+            AI Recommendation
           </h2>
 
           <div className="prose prose-invert max-w-none">
