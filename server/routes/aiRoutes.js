@@ -60,13 +60,15 @@ Make the plan practical for a college engineering student.
       plan: aiText,
     });
   } catch (error) {
-    console.log(error.response?.data || error.message);
+  console.log("FULL AI ERROR:");
+  console.log(JSON.stringify(error.response?.data, null, 2));
 
-    res.status(error.response?.status || 500).json({
-      message: "AI request failed",
-      error: error.response?.data || error.message,
-    });
-  }
+  res.status(error.response?.status || 500).json({
+    message: "AI request failed",
+    error: error.response?.data || error.message,
+  });
+}
+
 });
 
 module.exports = router;
