@@ -4,6 +4,9 @@ const axios = require("axios");
 const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
+router.get("/", (req, res) => {
+  res.send("AI Routes Working");
+});
 
 router.post("/workout-plan", authMiddleware, async (req, res) => {
   try {
@@ -72,3 +75,4 @@ Make the plan practical for a college engineering student.
 });
 
 module.exports = router;
+``
