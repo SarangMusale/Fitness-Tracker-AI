@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import api from "../api";
 
 import WorkoutCard from "../components/WorkoutCard";
+import WelcomeCard from "../components/dashboard/WelcomeCard";
+import StatsCard from "../components/dashboard/StatsCard";
+import ProgressCard from "../components/dashboard/ProgressCard";
 
 function Dashboard() {
   const [workouts, setWorkouts] = useState([]);
@@ -93,37 +96,60 @@ function Dashboard() {
   };
 
   return (
-    <div className="p-4 md:p-6">
-      <h2 className="text-3xl md:text-4xl font-bold mb-6">
-        Dashboard
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="bg-slate-800 p-6 rounded-2xl">
-          <h3 className="text-xl font-semibold">Workouts</h3>
-          <p className="text-3xl mt-4 font-bold text-cyan-400">
-            {totalWorkouts}
-          </p>
-        </div>
-
-        <div className="bg-slate-800 p-6 rounded-2xl">
-          <h3 className="text-xl font-semibold">Calories Burned</h3>
-          <p className="text-3xl mt-4 font-bold text-cyan-400">
-            {totalCalories}
-          </p>
-        </div>
-
-        <div className="bg-slate-800 p-6 rounded-2xl">
-          <h3 className="text-xl font-semibold">Total Duration</h3>
-          <p className="text-3xl mt-4 font-bold text-cyan-400">
-            {totalDuration} mins
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#081224] text-white p-4 md:p-6">
+      <div className="mb-8">
+        <WelcomeCard
+          name="Sarang"
+          goal="Fat Loss"
+          level="Intermediate"
+        />
       </div>
 
-      <div className="bg-slate-800 p-6 rounded-2xl mb-10">
-        <h2 className="text-2xl md:text-3xl font-bold mb-6">
-          Add Workout
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <StatsCard
+          icon="🔥"
+          title="Current Streak"
+          value="12 Days"
+          subtitle="Keep going"
+          color="orange"
+        />
+
+        <StatsCard
+          icon="⚖️"
+          title="Current Weight"
+          value="90 kg"
+          subtitle="Target: 82 kg"
+          color="purple"
+        />
+
+        <StatsCard
+          icon="🏋️"
+          title="Total Workouts"
+          value={totalWorkouts}
+          subtitle={`${totalCalories} kcal burned`}
+          color="cyan"
+        />
+
+        <StatsCard
+          icon="⏱️"
+          title="Training Time"
+          value={`${totalDuration} min`}
+          subtitle="Total duration"
+          color="green"
+        />
+      </div>
+
+      <div className="mb-8">
+        <ProgressCard
+          title="Weekly Goal"
+          percentage={70}
+          label="7 / 10 sessions completed"
+        />
+      </div>
+
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl mb-8">
+        <h2 className="text-2xl font-bold mb-6">
+          ➕ Add Workout
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -132,7 +158,7 @@ function Dashboard() {
             placeholder="Workout Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="bg-slate-700 p-4 rounded-xl outline-none"
+            className="bg-slate-800 p-4 rounded-2xl outline-none"
           />
 
           <input
@@ -140,7 +166,7 @@ function Dashboard() {
             placeholder="Calories"
             value={calories}
             onChange={(e) => setCalories(e.target.value)}
-            className="bg-slate-700 p-4 rounded-xl outline-none"
+            className="bg-slate-800 p-4 rounded-2xl outline-none"
           />
 
           <input
@@ -148,20 +174,31 @@ function Dashboard() {
             placeholder="Duration"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
-            className="bg-slate-700 p-4 rounded-xl outline-none"
+            className="bg-slate-800 p-4 rounded-2xl outline-none"
           />
         </div>
 
         <button
           onClick={addWorkout}
-          className="mt-6 w-full md:w-auto bg-cyan-500 hover:bg-cyan-400 transition px-6 py-3 rounded-xl font-bold text-slate-900"
+          className="mt-6 bg-cyan-500 hover:bg-cyan-400 transition px-8 py-3 rounded-2xl font-bold text-slate-900"
         >
           Add Workout
         </button>
       </div>
 
+      <div className="mb-8 rounded-3xl bg-gradient-to-r from-pink-500/20 via-purple-500/10 to-cyan-500/20 border border-white/10 p-6">
+        <h2 className="text-2xl font-bold mb-2">
+          🤖 AI Fitness Coach
+        </h2>
+
+        <p className="text-slate-300">
+          Complete your workouts and track your weight to unlock
+          personalized AI progress reviews.
+        </p>
+      </div>
+
       <div>
-        <h2 className="text-2xl md:text-3xl font-bold mb-6">
+        <h2 className="text-3xl font-bold mb-6">
           Recent Workouts
         </h2>
 

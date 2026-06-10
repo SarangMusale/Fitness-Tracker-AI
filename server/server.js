@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const weightRoutes = require("./routes/weightRoutes");
 
 const authRoutes = require("./routes/authRoutes");
 const workoutRoutes = require("./routes/workoutRoutes");
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes); // line c
 app.use("/api/workouts", workoutRoutes); //line d
 app.use("/api/profile", profileRoutes); // line e
 app.use("/api/ai", aiRoutes);
+app.use("/api/weight", weightRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI, {

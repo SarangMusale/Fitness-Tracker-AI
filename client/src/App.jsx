@@ -28,6 +28,7 @@ import AIWorkout from "./pages/AIWorkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
+import WeightTracker from "./pages/WeightTracker";
 
 function Sidebar({ isOpen, setIsOpen }) {
   return (
@@ -188,6 +189,15 @@ function AppLayout() {
               </ProtectedRoute>
             }
           />
+          <Route
+  path="/weight"
+  element={
+    <ProtectedRoute>
+      <WeightTracker />
+    </ProtectedRoute>
+  }
+/>
+
 
           <Route
             path="/profile"
