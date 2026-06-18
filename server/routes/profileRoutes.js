@@ -24,8 +24,11 @@ router.put("/", authMiddleware, async (req, res) => {
         age: req.body.age,
         height: req.body.height,
         weight: req.body.weight,
+        goalWeight: req.body.goalWeight,
         goal: req.body.goal,
         experience: req.body.experience,
+        
+
       },
       {
         new: true,

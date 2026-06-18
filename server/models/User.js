@@ -32,6 +32,11 @@ weight: {
   default: 0,
 },
 
+goalWeight: {
+  type: Number,
+  default: 0,
+},
+
 goal: {
   type: String,
   default: "",
@@ -41,6 +46,8 @@ experience: {
   type: String,
   default: "",
 },
+
+
   },
   {
     timestamps: true,
