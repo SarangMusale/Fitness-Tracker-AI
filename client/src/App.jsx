@@ -17,6 +17,7 @@ import {
   FaRunning,
   FaUser,
   FaRobot,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 import Landing from "./pages/Landing";
@@ -27,10 +28,12 @@ import Profile from "./pages/Profile";
 import AIWorkout from "./pages/AIWorkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ProtectedRoute from "./components/ProtectedRoute";
 import WeightTracker from "./pages/WeightTracker";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function Sidebar({ isOpen, setIsOpen }) {
+  const { logout } = useContext(AuthContext);
+
   return (
     <>
       {isOpen && (
@@ -78,6 +81,15 @@ function Sidebar({ isOpen, setIsOpen }) {
           </Link>
 
           <Link
+            to="/weight"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
+          >
+            <span>⚖️</span>
+            <span>Weight Tracker</span>
+          </Link>
+
+          <Link
             to="/analytics"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
@@ -103,16 +115,18 @@ function Sidebar({ isOpen, setIsOpen }) {
             <FaUser />
             <span>Profile</span>
           </Link>
+
           <button
-  onClick={() => {
-    logout();
-    setIsOpen(false);
-    window.location.href = "/login";
-  }}
-  className="flex items-center gap-3 p-4 rounded-xl hover:bg-red-500/20 text-red-400 transition w-full"
->
-  Logout
-</button>
+            onClick={() => {
+              logout();
+              setIsOpen(false);
+              window.location.href = "/login";
+            }}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-red-500/20 text-red-400 transition w-full"
+          >
+            <FaSignOutAlt />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
     </>
@@ -164,19 +178,28 @@ function AppLayout() {
           />
 
           <Route
-            path="/analytics"
+            path="/workouts"
             element={
               <ProtectedRoute>
-                <Analytics />
+                <Workouts />
               </ProtectedRoute>
             }
           />
 
           <Route
-            path="/workouts"
+            path="/weight"
             element={
               <ProtectedRoute>
-                <Workouts />
+                <WeightTracker />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <Analytics />
               </ProtectedRoute>
             }
           />
@@ -189,15 +212,6 @@ function AppLayout() {
               </ProtectedRoute>
             }
           />
-          <Route
-  path="/weight"
-  element={
-    <ProtectedRoute>
-      <WeightTracker />
-    </ProtectedRoute>
-  }
-/>
-
 
           <Route
             path="/profile"

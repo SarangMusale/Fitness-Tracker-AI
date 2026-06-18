@@ -14,42 +14,79 @@ import {
 function WeightTracker() {
   const [weights, setWeights] = useState([]);
   const [weight, setWeight] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchWeights();
   }, []);
 
+  const authHeaders = () => {
+    const token = localStorage.getItem("token");
+
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  };
+
   const fetchWeights = async () => {
     try {
-      const response = await api.get("/weight");
+      setError("");
+
+      const response = await api.get("/weight", authHeaders());
+
       setWeights(response.data);
     } catch (error) {
-      console.log(error);
+      console.log("Weight fetch error:", error.response?.data || error.message);
+
+      setError(
+        error.response?.data?.message || "Failed to load weight data."
+      );
     }
   };
 
   const addWeight = async () => {
-    if (!weight) return;
+    if (!weight) {
+      setError("Please enter your weight.");
+      return;
+    }
 
     try {
-      const response = await api.post("/weight", {
-        weight: Number(weight),
-      });
+      setError("");
+
+      const response = await api.post(
+        "/weight",
+        {
+          weight: Number(weight),
+        },
+        authHeaders()
+      );
 
       setWeights([...weights, response.data]);
       setWeight("");
     } catch (error) {
-      console.log(error);
+      console.log("Weight save error:", error.response?.data || error.message);
+
+      setError(
+        error.response?.data?.message || "Failed to save weight."
+      );
     }
   };
 
   const deleteWeight = async (id) => {
     try {
-      await api.delete(`/weight/${id}`);
+      setError("");
+
+      await api.delete(`/weight/${id}`, authHeaders());
 
       setWeights(weights.filter((item) => item._id !== id));
     } catch (error) {
-      console.log(error);
+      console.log("Weight delete error:", error.response?.data || error.message);
+
+      setError(
+        error.response?.data?.message || "Failed to delete weight."
+      );
     }
   };
 
@@ -77,6 +114,12 @@ function WeightTracker() {
       <h1 className="text-3xl md:text-4xl font-bold mb-8">
         Weight Tracker
       </h1>
+
+      {error && (
+        <div className="bg-red-500/20 border border-red-400/30 text-red-300 p-4 rounded-2xl mb-6">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="rounded-3xl bg-purple-500/20 border border-purple-400/20 p-6">
@@ -129,21 +172,27 @@ function WeightTracker() {
           Weight Progress Graph
         </h2>
 
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="weight"
-                stroke="#22d3ee"
-                strokeWidth={3}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="h-80 min-h-[320px]">
+          {weights.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="weight"
+                  stroke="#22d3ee"
+                  strokeWidth={3}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center text-slate-400">
+              Add weight entries to see your progress graph.
+            </div>
+          )}
         </div>
       </div>
 
@@ -153,28 +202,34 @@ function WeightTracker() {
         </h2>
 
         <div className="space-y-4">
-          {weights.map((item) => (
-            <div
-              key={item._id}
-              className="flex items-center justify-between bg-slate-800 p-4 rounded-2xl"
-            >
-              <div>
-                <p className="text-xl font-bold">
-                  {item.weight} kg
-                </p>
-                <p className="text-slate-400">
-                  {new Date(item.date).toLocaleDateString("en-IN")}
-                </p>
-              </div>
-
-              <button
-                onClick={() => deleteWeight(item._id)}
-                className="text-red-400 hover:text-red-300"
+          {weights.length === 0 ? (
+            <p className="text-slate-400">
+              No weight entries yet.
+            </p>
+          ) : (
+            weights.map((item) => (
+              <div
+                key={item._id}
+                className="flex items-center justify-between bg-slate-800 p-4 rounded-2xl"
               >
-                Delete
-              </button>
-            </div>
-          ))}
+                <div>
+                  <p className="text-xl font-bold">
+                    {item.weight} kg
+                  </p>
+                  <p className="text-slate-400">
+                    {new Date(item.date).toLocaleDateString("en-IN")}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => deleteWeight(item._id)}
+                  className="text-red-400 hover:text-red-300"
+                >
+                  Delete
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

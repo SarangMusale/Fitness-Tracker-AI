@@ -1,20 +1,24 @@
+import { useContext } from "react";
+
 import {
   FaDumbbell,
   FaChartLine,
   FaRunning,
   FaUser,
   FaTimes,
-  FaRobot
+  FaRobot,
+  FaWeight,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 function Sidebar({ isOpen, setIsOpen }) {
-const { logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
 
-    return (
+  return (
     <>
-      {/* Mobile Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -22,7 +26,6 @@ const { logout } = useContext(AuthContext);
         />
       )}
 
-      {/* Sidebar */}
       <div
         className={`
           fixed lg:static top-0 left-0 z-50
@@ -33,11 +36,10 @@ const { logout } = useContext(AuthContext);
           lg:translate-x-0
         `}
       >
-        {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <h1 className="text-3xl font-bold text-cyan-400">
-  Fitness Tracker AI
-</h1>
+            Fitness Tracker AI
+          </h1>
 
           <button
             onClick={() => setIsOpen(false)}
@@ -47,11 +49,9 @@ const { logout } = useContext(AuthContext);
           </button>
         </div>
 
-        {/* Navigation */}
         <div className="space-y-4">
-
           <Link
-            to="/"
+            to="/dashboard"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 p-4 rounded-xl bg-slate-700 hover:bg-slate-600 transition"
           >
@@ -69,6 +69,15 @@ const { logout } = useContext(AuthContext);
           </Link>
 
           <Link
+            to="/weight"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
+          >
+            <FaWeight />
+            <span>Weight Tracker</span>
+          </Link>
+
+          <Link
             to="/analytics"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
@@ -78,12 +87,12 @@ const { logout } = useContext(AuthContext);
           </Link>
 
           <Link
-           to="/ai-workout"
-           onClick={() => setIsOpen(false)}
-           className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
+            to="/ai-workout"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-700 transition"
           >
-           <FaRobot />
-           <span>AI Coach</span>
+            <FaRobot />
+            <span>AI Coach</span>
           </Link>
 
           <Link
@@ -95,24 +104,21 @@ const { logout } = useContext(AuthContext);
             <span>Profile</span>
           </Link>
 
-<button
-  onClick={() => {
-    logout();
-    setIsOpen(false);
-    window.location.href = "/login";
-  }}
-  className="flex items-center gap-3 p-4 rounded-xl hover:bg-red-500/20 text-red-400 transition w-full"
->
-  Logout
-</button>
-          
-
+          <button
+            onClick={() => {
+              logout();
+              setIsOpen(false);
+              window.location.href = "/login";
+            }}
+            className="flex items-center gap-3 p-4 rounded-xl hover:bg-red-500/20 text-red-400 transition w-full"
+          >
+            <FaSignOutAlt />
+            <span>Logout</span>
+          </button>
         </div>
-
       </div>
     </>
   );
 }
 
 export default Sidebar;
-

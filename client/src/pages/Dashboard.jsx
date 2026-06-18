@@ -8,13 +8,14 @@ import ProgressCard from "../components/dashboard/ProgressCard";
 
 function Dashboard() {
   const [workouts, setWorkouts] = useState([]);
-
+  const [latestWeight, setLatestWeight] = useState(null);
   const [name, setName] = useState("");
   const [calories, setCalories] = useState("");
   const [duration, setDuration] = useState("");
 
   useEffect(() => {
     fetchWorkouts();
+     fetchLatestWeight();
   }, []);
 
   const fetchWorkouts = async () => {
@@ -25,9 +26,20 @@ function Dashboard() {
       console.log(error);
     }
   };
+  const fetchLatestWeight = async () => {
+  try {
+    const response = await api.get("/weight");
+
+    if (response.data.length > 0) {
+      const latest = response.data[response.data.length - 1];
+      setLatestWeight(latest.weight);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   const totalWorkouts = workouts.length;
-
   const totalCalories = workouts.reduce(
     (sum, workout) => sum + workout.calories,
     0
@@ -113,15 +125,14 @@ function Dashboard() {
           subtitle="Keep going"
           color="orange"
         />
-
-        <StatsCard
-          icon="⚖️"
-          title="Current Weight"
-          value="90 kg"
-          subtitle="Target: 82 kg"
-          color="purple"
-        />
-
+<StatsCard
+  icon="⚖️"
+  title="Current Weight"
+  value={latestWeight ? `${latestWeight} kg` : "- kg"}
+  subtitle="Target: 82 kg"
+  color="purple"
+/>
+       
         <StatsCard
           icon="🏋️"
           title="Total Workouts"
